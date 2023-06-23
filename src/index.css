@@ -1,13 +1,186 @@
-body {
+*, ::before, ::after {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+}
+html, body {
+  min-width: 100vw;
+  width: fit-content;
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(148deg, #1563DE,#E4BCE5);
+}
+nav {
+  background: linear-gradient(148deg,#72afff, #006BF6);
+  padding: 10px;
+  text-align: center;
+  position: sticky;
+  width: 100%;
+}
+nav a {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight:100;
+  margin: 0 10px;
+  color: #fff;
+}
+.LogoTrello {
+  display: block;
+  position: absolute;
+  top: 3px;
+}
+.board {
+  width: 98%;
+  margin: 5px auto;
+  padding: 20px;
+  border: 0.4px solid rgb(135, 164, 207);
+  min-height: calc(100vh - 53px);
+  border-radius: 5px;
+}
+.board h1 {
+  margin-left: 25px;
+  color: #fff;
+  font-size: 1.6em;
+}
+.main-content {
+  display: flex;
+  padding: 40px 20px 0;
+}
+.items-container {
+  flex-shrink: 0;
+  padding: 10px;
+  width: 300px;
+  background: #f1f1f1;
+  border-radius: 6px;
+  margin: 7px;
+  cursor:grab;
+  /* align-self: flex-start; */
+}
+.top-container {
+  display: flex;
+  justify-content: space-between;
+}
+.top-container button, li button {
+  border-radius: 5px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: #e23c5d;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+.item {
+  padding: 15px 5px;
+  margin: 10px 0;
+  background: #f8f8f8;
+  box-shadow: 0 4px 1px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  word-break: break-all;
+}
+.add-item-btn, .add-container-btn {
+  display: inline-block;
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 20px;
+  font-size: 16px;
+}
+form {
+  display: none;
+  padding: 5px;
+  position: relative;
+}
+.top-form-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.main-content form label {
+  display: block;
+  font-size: 18px;
+  margin: 10px 0;
+}
+.main-content form input {
+  display: block;
+  width: 100%;
+  padding: 5px;
+  font-size: 16px;
+}
+.validation-msg {
+  display: block;
+  color: crimson;
+  font-size: 16px;
+  padding: 5px 0;
+}
+.close-form-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+}
+button[type="submit"] {
+  display: inline-block;
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 5px;
+  cursor: pointer;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Add New Container */
+.add-new-container {
+  flex-shrink: 0;
+  padding: 10px;
+  width: 300px;
+  background: #f1f1f1;
+  border-radius: 3px;
+  margin: 10px;
+  cursor: pointer;
+  align-self: flex-start;
 }
+.add-container-btn {
+  margin-top: 5px;
+  width: 100%;
+}
+
+.ring{
+  background-color: #a1bbe9;
+  border-radius: 10px;
+  margin: 0 10px;
+  height: fit-content;
+}
+/*DND*/
+
+/* Style pour les conteneurs d'éléments glissables */
+.draggable-container {
+  background-color: #a1bbe9;
+  margin: 0 10px;
+  /* padding: 10px; */
+  border-radius: 10px;
+  height: fit-content;
+  /* border: 1px solid #ccc;
+  cursor: move; */
+}
+
+/* Style pour l'élément survolé pendant le glisser-déposer */
+.dragover-container {
+  /* border-bottom: 2px solid #333; */
+  scale: 1.02;
+  
+}
+
+/* Style pour l'élément en cours de glissement */
+.dragging-container {
+  opacity: 1;
+  background-color: #006BF6;
+}
+
+/* Style pour le conteneur des éléments */
+/* .main-content {
+  display: flex;
+  gap: 20px;
+} */
