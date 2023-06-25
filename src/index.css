@@ -169,14 +169,15 @@ button[type="submit"] {
 /* Style pour l'élément survolé pendant le glisser-déposer */
 .dragover-container {
   /* border-bottom: 2px solid #333; */
-  scale: 1.02;
+  scale: 1.05;
   
 }
 
 /* Style pour l'élément en cours de glissement */
 .dragging-container {
   opacity: 1;
-  background-color: #006BF6;
+  background-color: #438ce6;
+  /* scale: 1.1; */
 }
 
 /* Style pour le conteneur des éléments */
@@ -184,3 +185,13 @@ button[type="submit"] {
   display: flex;
   gap: 20px;
 } */
+
+li:active{
+  background-color: rgb(134, 134, 231);
+  scale: 0.9;
+}
+
+.dragover-item{
+  background-color: blueviolet;
+  margin-bottom: 30px;
+}

@@ -4,6 +4,7 @@ import React from 'react';
 import Nav from './components/Nav/Nav';
 import ItemContainer from './components/ItemContainer/ItemContainer';
 import { toggleForm,handleAddItem } from './scripts/script';
+import { log } from 'console';
 
 function App() {
   // const [itemContainers, setItemContainers] = useState<string[]>(['Current', 'To Do', 'Finished']);
@@ -20,11 +21,6 @@ function App() {
     setInputAddContainer(e.target.value)
   }
 
-  //DND
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false); // État pour indiquer si un élément est en cours de glissement
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   //ref span
   const span = useRef<HTMLSpanElement>(null);
@@ -35,16 +31,6 @@ function App() {
 
     setTask(updatedItemContainers);
   }
-
-
-  // const handleOpenAddNewContainerForm = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   // const button = e.currentTarget;
-    
-  //   // const form = button.nextElementSibling as HTMLFormElement;
-  //   handleAddItem(e);
-
-  //   // toggleForm(button, form, true);
-  // }
 
   const handleCloseFormAddNewContainer = (e: React.MouseEvent<HTMLButtonElement>) => {
     const button = e.currentTarget.closest('.add-new-container')?.querySelector('.add-container-btn') as HTMLButtonElement;
@@ -68,39 +54,68 @@ function App() {
     }
   };
 
-  //Drag and drop
-  const handleDragStartContainer = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+  //Drag and drop ===================================
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false); // État pour indiquer si un élément est en cours de glissement
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [draggedOverItemIndex, setDraggedOverItemIndex] = useState<number | null>(null);
+  const [elementToDrag, setElementToDrag] = useState<string>('');
+  const [indexContainer, setIndexContainer] = useState<number | null>(null);
+
+  const handleDragStartContainer = (e: React.DragEvent<HTMLElement>, index: number, containerIndex?: number) => {
     e.stopPropagation();
     e.dataTransfer.setData('text/plain', index.toString());
     setIsDragging(true);
+    setElementToDrag(e.currentTarget.nodeName);
+    
+    if (containerIndex !== undefined) {
+      setIndexContainer(containerIndex);
+      console.log(indexContainer, 'container index');
+    } 
+    
   };
 
-  const handleDragOverContainer = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-    e.preventDefault();
+  const handleDragOverContainer = (e: React.DragEvent<HTMLElement>, index: number, itemIndex?: number ) => {
+    e.preventDefault();    
     setDragOverIndex(index); // Définit l'index de l'élément survolé dans l'état dragOverIndex
     //test
-    if (draggingIndex !== null && draggingIndex !== index) {
-      setHoveredIndex(index);
+    setDraggingIndex(index);
+    // console.log(draggingIndex, 'dragging index');
+    
+
+    if (draggingIndex !== null  && draggingIndex !== index) {
+      setHoveredIndex(index); 
+    }
+    
+    if (itemIndex !== undefined) {
+      setDraggedOverItemIndex(itemIndex)
+ 
     }
   };
 
-  const handleDragLeaveContainer = () => {
-    setDragOverIndex(null); // Réinitialise l'index de l'élément survolé lorsque le survol se termine
-  };
 
-  const handleDropContainer = (e: React.DragEvent<HTMLDivElement>, targetIndex: number) => {
+  const handleDropContainer = (e: React.DragEvent<HTMLElement>, targetIndex: number,) => {
     e.stopPropagation();
-    const draggedIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
-
-    if (draggedIndex !== targetIndex) {
-      const updatedContainers = [...task];
+    const draggedIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);    
+    const updatedContainers = [...task];
+    // console.log(indexContainer, 'container index');
+    if (draggedIndex !== targetIndex && elementToDrag === 'DIV') {
       const [draggedContainer] = updatedContainers.splice(draggedIndex, 1);
       updatedContainers.splice(targetIndex, 0, draggedContainer);
-
-      setTask(updatedContainers);
     }
-    // setDragOverIndex(null);
-    // setHoveredIndex(null);
+
+    if((e.currentTarget.nodeName === 'DIV' || e.currentTarget.nodeName === 'LI') && draggedOverItemIndex !== null &&  elementToDrag === 'LI') {
+        const [draggedItem] = updatedContainers[indexContainer!].items.splice(draggedIndex!,1)
+        updatedContainers[targetIndex].items.splice(draggedOverItemIndex, 0, draggedItem)
+    }
+
+    setTask(updatedContainers)
+    setDragOverIndex(null);
+    setHoveredIndex(null);
+    setDraggedOverItemIndex(null);
+    setIndexContainer(null);
+    setElementToDrag('');
   };
 
   const handleDragEnd = () => {
@@ -120,11 +135,23 @@ function App() {
               className={`draggable-container ${isDragging && draggingIndex === containerIndex ? 'dragging-container' : ''} ${dragOverIndex === containerIndex ? 'dragover-container' : ''}`}
               onDragStart={(e) => handleDragStartContainer(e, containerIndex)}
               onDragOver={(e) => handleDragOverContainer(e, containerIndex)}
-              onDragLeave={handleDragLeaveContainer}
               onDrop={(e) => handleDropContainer(e, containerIndex)}
               onDragEnd={handleDragEnd}
             >
-              <ItemContainer title={element.name} task={task} setTask={setTask}  handleDeleteContainer={() => handleDeleteContainer(containerIndex)} />
+              <ItemContainer 
+              title={element.name} 
+              task={task} setTask={setTask} 
+              containerIndex={containerIndex} 
+              hoveredContainer={hoveredIndex} 
+              indexContainerForHover={indexContainer}
+              dragStartParentContainer={handleDragStartContainer}
+              dragOverParentContainer={handleDragOverContainer}
+              handleDropParentContainer={handleDropContainer}
+              handleDragEnd={handleDragEnd}
+              isDragging={isDragging}
+              elementToDrag={elementToDrag}
+              draggedOverItemIndex={draggedOverItemIndex}
+              handleDeleteContainer={() => handleDeleteContainer(containerIndex)} />
             </div>
           ))}
           <div className="ring">
