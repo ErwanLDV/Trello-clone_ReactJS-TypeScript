@@ -4,7 +4,6 @@ import React from 'react';
 import Nav from './components/Nav/Nav';
 import ItemContainer from './components/ItemContainer/ItemContainer';
 import { toggleForm,handleAddItem } from './scripts/script';
-import { log } from 'console';
 
 function App() {
   // const [itemContainers, setItemContainers] = useState<string[]>(['Current', 'To Do', 'Finished']);
@@ -62,51 +61,68 @@ function App() {
   const [draggedOverItemIndex, setDraggedOverItemIndex] = useState<number | null>(null);
   const [elementToDrag, setElementToDrag] = useState<string>('');
   const [indexContainer, setIndexContainer] = useState<number | null>(null);
+  const [indexItemLi, setIndexItemLi] = useState<number | null>(null);
+  // useEffect(() => {
+  //   console.log(indexContainer);
+  // }, [indexContainer]);
+  
 
-  const handleDragStartContainer = (e: React.DragEvent<HTMLElement>, index: number, containerIndex?: number) => {
+  const handleDragStartContainer = (e: React.DragEvent<HTMLElement>, containerIndex: number, itemIndex?: number) => {
     e.stopPropagation();
-    e.dataTransfer.setData('text/plain', index.toString());
+    e.dataTransfer.setData('text/plain', containerIndex.toString());
     setIsDragging(true);
     setElementToDrag(e.currentTarget.nodeName);
     
-    if (containerIndex !== undefined) {
-      setIndexContainer(containerIndex);
-      console.log(indexContainer, 'container index');
+    
+    setIndexContainer(containerIndex!);
+    
+    if (itemIndex !== null && itemIndex !== undefined) {
+      setIndexItemLi(itemIndex);
     } 
     
   };
 
   const handleDragOverContainer = (e: React.DragEvent<HTMLElement>, index: number, itemIndex?: number ) => {
     e.preventDefault();    
-    setDragOverIndex(index); // Définit l'index de l'élément survolé dans l'état dragOverIndex
+    // setDragOverIndex(index); // Définit l'index de l'élément survolé dans l'état dragOverIndex
     //test
-    setDraggingIndex(index);
-    // console.log(draggingIndex, 'dragging index');
     
-
+    
+    setDraggingIndex(index);
+    // console.log(index, 'index');
+    // console.log(itemIndex, 'ITEM INDEX');
+    // console.log(indexContainer, 'container index');
+    // console.log(indexContainer, 'index container');
+    
+    
     if (draggingIndex !== null  && draggingIndex !== index) {
       setHoveredIndex(index); 
     }
     
     if (itemIndex !== undefined) {
-      setDraggedOverItemIndex(itemIndex)
- 
+      setDraggedOverItemIndex(itemIndex); 
     }
   };
 
 
   const handleDropContainer = (e: React.DragEvent<HTMLElement>, targetIndex: number,) => {
     e.stopPropagation();
-    const draggedIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);    
+    // const draggedIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);    
     const updatedContainers = [...task];
     // console.log(indexContainer, 'container index');
-    if (draggedIndex !== targetIndex && elementToDrag === 'DIV') {
-      const [draggedContainer] = updatedContainers.splice(draggedIndex, 1);
+    // console.log(indexItemLi, 'index item');
+    // console.log(draggedIndex);
+    
+    
+
+
+    if (indexContainer !== targetIndex && elementToDrag === 'DIV') {
+      const [draggedContainer] = updatedContainers.splice(indexContainer!, 1);
       updatedContainers.splice(targetIndex, 0, draggedContainer);
     }
 
     if((e.currentTarget.nodeName === 'DIV' || e.currentTarget.nodeName === 'LI') && draggedOverItemIndex !== null &&  elementToDrag === 'LI') {
-        const [draggedItem] = updatedContainers[indexContainer!].items.splice(draggedIndex!,1)
+        const [draggedItem] = updatedContainers[indexContainer!].items.splice(indexItemLi!,1)
         updatedContainers[targetIndex].items.splice(draggedOverItemIndex, 0, draggedItem)
     }
 
@@ -116,11 +132,9 @@ function App() {
     setDraggedOverItemIndex(null);
     setIndexContainer(null);
     setElementToDrag('');
-  };
-
-  const handleDragEnd = () => {
     setIsDragging(false);
   };
+
   return (
     <div className="App">
 
@@ -136,7 +150,6 @@ function App() {
               onDragStart={(e) => handleDragStartContainer(e, containerIndex)}
               onDragOver={(e) => handleDragOverContainer(e, containerIndex)}
               onDrop={(e) => handleDropContainer(e, containerIndex)}
-              onDragEnd={handleDragEnd}
             >
               <ItemContainer 
               title={element.name} 
@@ -147,7 +160,6 @@ function App() {
               dragStartParentContainer={handleDragStartContainer}
               dragOverParentContainer={handleDragOverContainer}
               handleDropParentContainer={handleDropContainer}
-              handleDragEnd={handleDragEnd}
               isDragging={isDragging}
               elementToDrag={elementToDrag}
               draggedOverItemIndex={draggedOverItemIndex}

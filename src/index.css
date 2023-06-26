@@ -177,6 +177,7 @@ button[type="submit"] {
 .dragging-container {
   opacity: 1;
   background-color: #438ce6;
+  scale: 1.05;
   /* scale: 1.1; */
 }
 
@@ -188,7 +189,6 @@ button[type="submit"] {
 
 li:active{
   background-color: rgb(134, 134, 231);
-  scale: 0.9;
 }
 
 .dragover-item{

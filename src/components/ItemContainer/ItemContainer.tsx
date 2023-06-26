@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useState } from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import Item from './Item/Item'
 import { handleAddItem, toggleForm } from '../../scripts/script'
 
@@ -9,17 +9,16 @@ type Props = {
   setTask: React.Dispatch<React.SetStateAction<{ name: string; items: string[]; }[]>>,
   containerIndex: number,
   hoveredContainer: number | null,
-  dragStartParentContainer: (e: React.DragEvent<HTMLElement>, index: number, containerIndex?: number) => void,
+  dragStartParentContainer: (e: React.DragEvent<HTMLElement>, containerIndex: number, itemIndex?: number) => void,
   dragOverParentContainer: (e: React.DragEvent<HTMLElement>, index: number, itemIndex?: number) => void,
   handleDropParentContainer: (e: React.DragEvent<HTMLElement>, targetIndex: number) => void,
-  handleDragEnd:  (e: React.DragEvent<HTMLElement>) => void,
   isDragging: boolean,
   elementToDrag: string,
   draggedOverItemIndex: number | null,
   indexContainerForHover: number | null,
 }
 
-function ItemContainer({ title, handleDeleteContainer, task, setTask, containerIndex,indexContainerForHover,isDragging,elementToDrag,draggedOverItemIndex, hoveredContainer,dragStartParentContainer,dragOverParentContainer, handleDropParentContainer,handleDragEnd }: Props) {
+function ItemContainer({ title, handleDeleteContainer, task, setTask, containerIndex,indexContainerForHover,isDragging,elementToDrag,draggedOverItemIndex, hoveredContainer,dragStartParentContainer,dragOverParentContainer, handleDropParentContainer }: Props) {
   const truncatedTitle = title.length > 27 ? title.substring(0, 27) + '...' : title;
   
   // const [items, setItems] = useState<string[]>([]);
@@ -72,46 +71,44 @@ function ItemContainer({ title, handleDeleteContainer, task, setTask, containerI
   }
 
   // sans strict mode !!!!!!!!!!!!
-  const handleRemoveItem = (index: number) => {
-    if (objectContainer?.items) {
-      setTask((prevObjects) => {
-
-        prevObjects.find(element => objectContainer.name === element.name)!.items.splice(index, 1);
-
-        return [...prevObjects];
-      })
-    }
-    // const updatedItems = [...task];
-    // updatedItems.splice(index, 1);
-
-    // setTask(updatedItems);
-  }
-
-  // Avec stricmode =============================================================!!!!!!!!!!!!
   // const handleRemoveItem = (index: number) => {
   //   if (objectContainer?.items) {
   //     setTask((prevObjects) => {
-  //       const updatedObjects = prevObjects.map((element) => {
-  //         if (objectContainer.name === element.name) {
-  //           const updatedItems = [...element.items]; // Copie des items avant modification
-  //           updatedItems.splice(index, 1); // Modification de la copie des items
-  //           return { ...element, items: updatedItems }; // Retour de l'élément modifié
-  //         }
-  //         return element; // Retour des éléments inchangés
-  //       });
 
-  //       return updatedObjects; // Retour des objets mis à jour
-  //     });
+  //       prevObjects.find(element => objectContainer.name === element.name)!.items.splice(index, 1);
+
+  //       return [...prevObjects];
+  //     })
   //   }
-  // };
+  //   // const updatedItems = [...task];
+  //   // updatedItems.splice(index, 1);
+
+  //   // setTask(updatedItems);
+  // }
+
+  // Avec stricmode =============================================================!!!!!!!!!!!!
+  const handleRemoveItem = (index: number) => {
+    if (objectContainer?.items) {
+      setTask((prevObjects) => {
+        const updatedObjects = prevObjects.map((element) => {
+          if (objectContainer.name === element.name) {
+            const updatedItems = [...element.items]; // Copie des items avant modification
+            updatedItems.splice(index, 1); // Modification de la copie des items
+            return { ...element, items: updatedItems }; // Retour de l'élément modifié
+          }
+          return element; // Retour des éléments inchangés
+        });
+
+        return updatedObjects; // Retour des objets mis à jour
+      });
+    }
+  };
 
 
   // Drag and drop =>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // console.log(hoveredContainer);
 // console.log(containerIndex);
-
-
-
+  
   return (
     <div ref={containerRef} className="items-container" draggable="true">
       <div className="top-container">
@@ -120,12 +117,11 @@ function ItemContainer({ title, handleDeleteContainer, task, setTask, containerI
       </div>
       <ul>
         {objectContainer?.items.map((element, index) => (
-          <li className={`item ${draggedOverItemIndex === index && hoveredContainer === indexContainerForHover ? 'dragover-item' : ''}`} draggable key={index}
-            onDragStart={(e) => dragStartParentContainer(e, index, containerIndex)}
-            onDragOver={(e) => dragOverParentContainer(e, containerIndex, index)}
-            onDrop={(e) => handleDropParentContainer(e,  containerIndex)}
-            onDragEnd={handleDragEnd} >
-
+          <li className={`item ${draggedOverItemIndex === index && (hoveredContainer !== null ? containerIndex === hoveredContainer : containerIndex === indexContainerForHover) ? 'dragover-item' : ''}`} draggable key={index}
+            onDragStart={(e) => dragStartParentContainer(e,containerIndex, index)}
+            onDragOver={(e) => {dragOverParentContainer(e, containerIndex, index);setInputValue(''); }}
+            onDrop={(e) =>{ handleDropParentContainer(e,  containerIndex); setInputValue('');}}
+             >
             <Item key={index} content={element} handleRemoveItem={() => handleRemoveItem(index)}
             />
           </li>
