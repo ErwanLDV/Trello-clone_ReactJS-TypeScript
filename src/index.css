@@ -12,11 +12,12 @@ body {
   background: linear-gradient(148deg, #1563DE,#E4BCE5);
 }
 nav {
-  background: linear-gradient(148deg,#72afff, #006BF6);
+  background: linear-gradient(148deg,rgba(114, 175, 255, .8 ), rgba(0, 107, 246, .6 ));
   padding: 10px;
   text-align: center;
   position: sticky;
   width: 100%;
+  box-shadow: 0px 1px 10px  rgba(52, 52, 52, 0.4);
 }
 nav a {
   text-decoration: none;
@@ -53,9 +54,8 @@ nav a {
   width: 300px;
   background: #f1f1f1;
   border-radius: 6px;
-  margin: 7px;
+  margin: 6px;
   cursor:grab;
-  /* align-self: flex-start; */
 }
 .top-container {
   display: flex;
@@ -74,7 +74,7 @@ nav a {
 .item {
   padding: 15px 5px;
   margin: 10px 0;
-  background: #f8f8f8;
+  background: #fff;
   box-shadow: 0 4px 1px rgba(0,0,0,0.2);
   display: flex;
   align-items: center;
@@ -138,7 +138,7 @@ button[type="submit"] {
   width: 300px;
   background: #f1f1f1;
   border-radius: 3px;
-  margin: 10px;
+  margin: 7px;
   cursor: pointer;
   align-self: flex-start;
 }
@@ -153,24 +153,20 @@ button[type="submit"] {
   margin: 0 10px;
   height: fit-content;
 }
+
 /*DND*/
 
 /* Style pour les conteneurs d'éléments glissables */
 .draggable-container {
   background-color: #a1bbe9;
   margin: 0 10px;
-  /* padding: 10px; */
   border-radius: 10px;
   height: fit-content;
-  /* border: 1px solid #ccc;
-  cursor: move; */
 }
 
 /* Style pour l'élément survolé pendant le glisser-déposer */
 .dragover-container {
-  /* border-bottom: 2px solid #333; */
   scale: 1.05;
-  
 }
 
 /* Style pour l'élément en cours de glissement */
@@ -178,20 +174,15 @@ button[type="submit"] {
   opacity: 1;
   background-color: #438ce6;
   scale: 1.05;
-  /* scale: 1.1; */
 }
 
-/* Style pour le conteneur des éléments */
-/* .main-content {
-  display: flex;
-  gap: 20px;
-} */
 
 li:active{
-  background-color: rgb(134, 134, 231);
+  background-color: rgb(230, 234, 245);
+  
 }
 
 .dragover-item{
-  background-color: blueviolet;
-  margin-bottom: 30px;
+  background-color: rgb(226, 222, 236);
+  margin-bottom: 25px;
 }

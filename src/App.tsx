@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import React from 'react';
-// import './App.css';
 import Nav from './components/Nav/Nav';
 import ItemContainer from './components/ItemContainer/ItemContainer';
 import { toggleForm,handleAddItem } from './scripts/script';
 
 function App() {
-  // const [itemContainers, setItemContainers] = useState<string[]>(['Current', 'To Do', 'Finished']);
+  
   const [task, setTask] = useState<Array<{ name: string, items: string[] }>>([
     { name: 'Current', items: [] },
     { name: 'To Do', items: [] },
@@ -20,9 +19,9 @@ function App() {
     setInputAddContainer(e.target.value)
   }
 
-
   //ref span
   const span = useRef<HTMLSpanElement>(null);
+
 
   const handleDeleteContainer = (index: number) => {
     const updatedItemContainers = [...task];
@@ -40,8 +39,6 @@ function App() {
   const addContainer = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const actualValidation = span.current;
-    console.log(actualValidation);
-
 
     if(inputAddContainer.length === 0) {
       actualValidation!.textContent = "Must be at least 1 character long"
@@ -53,7 +50,7 @@ function App() {
     }
   };
 
-  //Drag and drop ===================================
+  //Drag and drop ===================================>>
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false); // État pour indiquer si un élément est en cours de glissement
@@ -62,10 +59,7 @@ function App() {
   const [elementToDrag, setElementToDrag] = useState<string>('');
   const [indexContainer, setIndexContainer] = useState<number | null>(null);
   const [indexItemLi, setIndexItemLi] = useState<number | null>(null);
-  // useEffect(() => {
-  //   console.log(indexContainer);
-  // }, [indexContainer]);
-  
+
 
   const handleDragStartContainer = (e: React.DragEvent<HTMLElement>, containerIndex: number, itemIndex?: number) => {
     e.stopPropagation();
@@ -84,16 +78,8 @@ function App() {
 
   const handleDragOverContainer = (e: React.DragEvent<HTMLElement>, index: number, itemIndex?: number ) => {
     e.preventDefault();    
-    // setDragOverIndex(index); // Définit l'index de l'élément survolé dans l'état dragOverIndex
-    //test
     
-    
-    setDraggingIndex(index);
-    // console.log(index, 'index');
-    // console.log(itemIndex, 'ITEM INDEX');
-    // console.log(indexContainer, 'container index');
-    // console.log(indexContainer, 'index container');
-    
+    setDraggingIndex(index);    
     
     if (draggingIndex !== null  && draggingIndex !== index) {
       setHoveredIndex(index); 
@@ -107,14 +93,7 @@ function App() {
 
   const handleDropContainer = (e: React.DragEvent<HTMLElement>, targetIndex: number,) => {
     e.stopPropagation();
-    // const draggedIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);    
     const updatedContainers = [...task];
-    // console.log(indexContainer, 'container index');
-    // console.log(indexItemLi, 'index item');
-    // console.log(draggedIndex);
-    
-    
-
 
     if (indexContainer !== targetIndex && elementToDrag === 'DIV') {
       const [draggedContainer] = updatedContainers.splice(indexContainer!, 1);
@@ -160,8 +139,6 @@ function App() {
               dragStartParentContainer={handleDragStartContainer}
               dragOverParentContainer={handleDragOverContainer}
               handleDropParentContainer={handleDropContainer}
-              isDragging={isDragging}
-              elementToDrag={elementToDrag}
               draggedOverItemIndex={draggedOverItemIndex}
               handleDeleteContainer={() => handleDeleteContainer(containerIndex)} />
             </div>

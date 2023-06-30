@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useRef, useState } from 'react'
+import React, { FormEvent, useRef, useState } from 'react'
 import Item from './Item/Item'
 import { handleAddItem, toggleForm } from '../../scripts/script'
 
@@ -12,16 +12,14 @@ type Props = {
   dragStartParentContainer: (e: React.DragEvent<HTMLElement>, containerIndex: number, itemIndex?: number) => void,
   dragOverParentContainer: (e: React.DragEvent<HTMLElement>, index: number, itemIndex?: number) => void,
   handleDropParentContainer: (e: React.DragEvent<HTMLElement>, targetIndex: number) => void,
-  isDragging: boolean,
-  elementToDrag: string,
   draggedOverItemIndex: number | null,
   indexContainerForHover: number | null,
 }
 
-function ItemContainer({ title, handleDeleteContainer, task, setTask, containerIndex,indexContainerForHover,isDragging,elementToDrag,draggedOverItemIndex, hoveredContainer,dragStartParentContainer,dragOverParentContainer, handleDropParentContainer }: Props) {
-  const truncatedTitle = title.length > 27 ? title.substring(0, 27) + '...' : title;
+function ItemContainer({ title, handleDeleteContainer, task, setTask, containerIndex, indexContainerForHover, draggedOverItemIndex, hoveredContainer, dragStartParentContainer, dragOverParentContainer, handleDropParentContainer }: Props) {
   
-  // const [items, setItems] = useState<string[]>([]);
+  const truncatedTitle = title.length > 27 ? title.substring(0, 27) + '...' : title;
+
   const objectContainer = task.find(element => element.name === title);
 
   // input
@@ -30,6 +28,7 @@ function ItemContainer({ title, handleDeleteContainer, task, setTask, containerI
     setInputValue(e.target.value);
   };
 
+  // Refs
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const span = useRef<HTMLSpanElement>(null);
@@ -70,45 +69,23 @@ function ItemContainer({ title, handleDeleteContainer, task, setTask, containerI
     }
   }
 
-  // sans strict mode !!!!!!!!!!!!
-  // const handleRemoveItem = (index: number) => {
-  //   if (objectContainer?.items) {
-  //     setTask((prevObjects) => {
-
-  //       prevObjects.find(element => objectContainer.name === element.name)!.items.splice(index, 1);
-
-  //       return [...prevObjects];
-  //     })
-  //   }
-  //   // const updatedItems = [...task];
-  //   // updatedItems.splice(index, 1);
-
-  //   // setTask(updatedItems);
-  // }
-
-  // Avec stricmode =============================================================!!!!!!!!!!!!
   const handleRemoveItem = (index: number) => {
     if (objectContainer?.items) {
       setTask((prevObjects) => {
         const updatedObjects = prevObjects.map((element) => {
           if (objectContainer.name === element.name) {
-            const updatedItems = [...element.items]; // Copie des items avant modification
-            updatedItems.splice(index, 1); // Modification de la copie des items
-            return { ...element, items: updatedItems }; // Retour de l'élément modifié
+            const updatedItems = [...element.items]; // Copy of items before modification
+            updatedItems.splice(index, 1); // Modification of the copy items
+            return { ...element, items: updatedItems }; // Return of modified element
           }
-          return element; // Retour des éléments inchangés
+          return element; // Return of unchanged elements
         });
 
-        return updatedObjects; // Retour des objets mis à jour
+        return updatedObjects; // Return of updated objects
       });
     }
   };
 
-
-  // Drag and drop =>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-// console.log(hoveredContainer);
-// console.log(containerIndex);
-  
   return (
     <div ref={containerRef} className="items-container" draggable="true">
       <div className="top-container">
@@ -118,10 +95,10 @@ function ItemContainer({ title, handleDeleteContainer, task, setTask, containerI
       <ul>
         {objectContainer?.items.map((element, index) => (
           <li className={`item ${draggedOverItemIndex === index && (hoveredContainer !== null ? containerIndex === hoveredContainer : containerIndex === indexContainerForHover) ? 'dragover-item' : ''}`} draggable key={index}
-            onDragStart={(e) => dragStartParentContainer(e,containerIndex, index)}
-            onDragOver={(e) => {dragOverParentContainer(e, containerIndex, index);setInputValue(''); }}
-            onDrop={(e) =>{ handleDropParentContainer(e,  containerIndex); setInputValue('');}}
-             >
+            onDragStart={(e) => dragStartParentContainer(e, containerIndex, index)}
+            onDragOver={(e) => { dragOverParentContainer(e, containerIndex, index); setInputValue(''); }}
+            onDrop={(e) => { handleDropParentContainer(e, containerIndex); setInputValue(''); }}
+          >
             <Item key={index} content={element} handleRemoveItem={() => handleRemoveItem(index)}
             />
           </li>
