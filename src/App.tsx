@@ -113,7 +113,6 @@ function App() {
     setElementToDrag('');
     setIsDragging(false);
   };
-
   return (
     <div className="App">
 

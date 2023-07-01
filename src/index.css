@@ -186,3 +186,27 @@ li:active{
   background-color: rgb(226, 222, 236);
   margin-bottom: 25px;
 }
+
+/*  @ media */
+@media (max-width: 1410px) {
+  .board{
+    width: 100vw;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+  nav{
+    width: 100vw;
+  }
+}
+
+@media (max-width: 811px) {
+  .burger-icon{
+    margin-right: 10px;
+  }
+  nav{
+    text-align: right;
+  }
+  .main-content{
+    padding: 40px 0 0 0;
+  }
+}
